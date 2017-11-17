@@ -9,7 +9,7 @@ class SpaceShip extends Item {
 	private Item objective;
 
 	public SpaceShip(double x, double y, int w) {
-		super(x, y, w);
+		super(x, y, w, true);
 		objective = this;
 	}
 

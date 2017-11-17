@@ -10,11 +10,13 @@ import java.awt.geom.Point2D;
 abstract class Item {
 
 	protected final Point2D center;
+	protected boolean movable;
 	private final int width;
 
-	public Item(double x, double y, int w) {
+	public Item(double x, double y, int w, boolean movable) {
 		center = new Point2D.Double(x, y);
 		width = w;
+		this.movable = movable;
 	}
 
 	public Point2D getLocation() {
