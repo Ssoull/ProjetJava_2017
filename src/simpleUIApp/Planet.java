@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Planet extends Item {
 	
-	private final int distanceMin = 50;
+	private final int distanceMin = 100;
 	private static ArrayList<Item> items;
 
 	public Planet(double x, double y, int w) {
@@ -24,7 +24,7 @@ public class Planet extends Item {
 		Point2D pos = this.center;
 		int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
 		arg0.setColor(Color.green);
-		arg0.fillRect(x - w / 2, y - w / 2, w, w);
+		arg0.fillOval(x - w / 2, y - w / 2, w, w);
 	}
 
 	@Override
@@ -32,16 +32,14 @@ public class Planet extends Item {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	private static double squareDistance(Point2D p1, Point2D p2) {
-		double dx = p1.getX() - p2.getX();
-		double dy = p1.getY() - p2.getY();
-		return dx * dx + dy * dy;
+
+	private double distanceBetween2Points(Point2D p1, Point2D p2) {
+		return Math.sqrt(Math.pow(p1.getX() - p2.getX(), 2) + Math.pow(p1.getY() - p2.getY(), 2));
 	}
 
 	@Override
 	public boolean contains(Point2D p) {
-		return squareDistance(this.center, p) <= (getWidth() / 2) * (getWidth() / 2);
+		return distanceBetween2Points(this.center, p) <= (getWidth() / 2) * (getWidth() / 2);
 	}
 	
 	public static void setItems(ArrayList<Item> items) {
@@ -49,7 +47,6 @@ public class Planet extends Item {
 	}
 
 	public boolean containsPlanet(Planet planet) {
-		
-		return squareDistance(planet.center, this.center) <= distanceMin - ((getWidth()/2) * (planet.getWidth()/2));
+		return distanceBetween2Points(planet.center, this.center) <= (getWidth()/2 + distanceMin) + (planet.getWidth()/2);
 	}
 }

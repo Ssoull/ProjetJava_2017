@@ -24,15 +24,15 @@ public class Main {
 		int countPlanets = 0;
 		Planet planet;
 		while (countPlanets < 5) {
-			randomSize = random.nextInt(50-40) + 40;
-			
-			planet = new Planet(random.nextInt(widthWindow-randomSize) + randomSize/2, 
-					random.nextInt(heightWindow-randomSize) + randomSize/2, randomSize);
+			randomSize = random.nextInt(100-40) + 40;
+
+			planet = new Planet(random.nextInt(widthWindow-randomSize) + randomSize/2,
+								random.nextInt(heightWindow-randomSize) + randomSize/2, randomSize);
 			
 			int countItem = 0;
 			boolean contains = false;
 			while (countItem < items.size() && !contains) {
-				
+
 				if (items.get(countItem) instanceof Planet) {
 					
 					Planet checkPlanet = (Planet) items.get(countItem);
