@@ -1,22 +1,23 @@
 package simpleUIApp;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Planet extends Item {
 	
-	private final int distanceMin = 100;
+	private final int DISTANCE_MIN = 100;
 	private static ArrayList<Item> items;
+	private int nbUnit;
 
-	public Planet(double x, double y, int w) {
+	Planet(double x, double y, int w) {
 		super(x, y, w, false);
+        nbUnit = 0;
 	}
 
 	@Override
 	public void move() {
-		
+        ++nbUnit;
 	}
 
 	@Override
@@ -25,12 +26,15 @@ public class Planet extends Item {
 		int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
 		arg0.setColor(Color.green);
 		arg0.fillOval(x - w / 2, y - w / 2, w, w);
+
+        arg0.setColor(Color.black);
+        String test = Integer.toString(nbUnit);
+		arg0.drawString(test, x - ((float)test.length()/2 * 6.5f), y + 5);
 	}
 
 	@Override
 	public void setObjective(Item o) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	private double distanceBetween2Points(Point2D p1, Point2D p2) {
@@ -42,11 +46,11 @@ public class Planet extends Item {
 		return distanceBetween2Points(this.center, p) <= (getWidth() / 2) * (getWidth() / 2);
 	}
 	
-	public static void setItems(ArrayList<Item> items) {
+	static void setItems(ArrayList<Item> items) {
 		Planet.items = items;
 	}
 
-	public boolean containsPlanet(Planet planet) {
-		return distanceBetween2Points(planet.center, this.center) <= (getWidth()/2 + distanceMin) + (planet.getWidth()/2);
+	boolean containsPlanet(Planet planet) {
+		return distanceBetween2Points(planet.center, this.center) <= (getWidth()/2 + DISTANCE_MIN) + (planet.getWidth()/2);
 	}
 }

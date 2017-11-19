@@ -10,13 +10,6 @@ public class Main {
 		Random random = new Random();
 		int widthWindow = 400;
 		int heightWindow = 500;
-		//ArrayList<Item> testItemList = new ArrayList<Item>();
-		/*
-		 * Randomly position 25 Ships in the Arena zone (defined afterwards)
-		 */
-		/*for (int i = 0; i < 25; i++) {
-			testItemList.add(new SpaceShip(random.nextInt(400), random.nextInt(500), 10));
-		}*/
 		
 		ArrayList<Item> items = new ArrayList<Item>();
 		
@@ -24,7 +17,7 @@ public class Main {
 		int countPlanets = 0;
 		Planet planet;
 		while (countPlanets < 5) {
-			randomSize = random.nextInt(100-40) + 40;
+			randomSize = random.nextInt(80-40) + 40;
 
 			planet = new Planet(random.nextInt(widthWindow-randomSize) + randomSize/2,
 								random.nextInt(heightWindow-randomSize) + randomSize/2, randomSize);
