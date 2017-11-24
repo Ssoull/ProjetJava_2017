@@ -21,7 +21,7 @@ public class Run implements ApplicationRunnable<Item> {
 		this.height = height;
 	}
 
-	@Override
+	@Override // Possibilité de transformer le Collection<? extends Item> qu'en Collection<? extends Item>
 	public void run(final Arena<Item> arg0, Collection<? extends Item> arg1) {
 		MouseListener mouseHandler = new MouseListener();
 
@@ -55,7 +55,20 @@ public class Run implements ApplicationRunnable<Item> {
 			public void run(TimerTask timerTask) {
 				arg0.refresh();
 				for (Item item : arg1) {
-					item.move();
+					if (item instanceof SpaceShip)
+						item.action();
+				}
+			}
+
+		});
+
+		Application.timer(1000, new TimerRunnable() {
+
+			public void run(TimerTask timerTask) {
+				arg0.refresh();
+				for (Item item : arg1) {
+					if (item instanceof Planet)
+						item.action();
 				}
 			}
 

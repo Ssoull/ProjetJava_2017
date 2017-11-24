@@ -27,7 +27,7 @@ abstract class Item {
 		return width;
 	}
 
-	public abstract void move();
+	public abstract void action();
 
 	public abstract void draw(Graphics2D arg0);
 

@@ -16,8 +16,8 @@ public class Planet extends Item {
 	}
 
 	@Override
-	public void move() {
-        ++nbUnit;
+	public void action() {
+		++nbUnit;
 	}
 
 	@Override
@@ -34,7 +34,11 @@ public class Planet extends Item {
 
 	@Override
 	public void setObjective(Item o) {
-		// TODO Auto-generated method stub
+
+		Point2D planetCoord = this.center;
+		SpaceShip spaceShip = new SpaceShip(planetCoord.getX(), planetCoord.getY(), 10);
+		spaceShip.setObjective(o);
+		items.add(spaceShip);
 	}
 
 	private double distanceBetween2Points(Point2D p1, Point2D p2) {
@@ -43,14 +47,37 @@ public class Planet extends Item {
 
 	@Override
 	public boolean contains(Point2D p) {
-		return distanceBetween2Points(this.center, p) <= (getWidth() / 2) * (getWidth() / 2);
+		return distanceBetween2Points(this.center, p) <= getWidth()/2;
 	}
 	
 	static void setItems(ArrayList<Item> items) {
 		Planet.items = items;
 	}
 
-	boolean containsPlanet(Planet planet) {
+	boolean containsItem(Planet planet) {
 		return distanceBetween2Points(planet.center, this.center) <= (getWidth()/2 + DISTANCE_MIN) + (planet.getWidth()/2);
+	}
+
+	static Planet checkPlanetCollisions(Planet objective, Point2D center) {
+
+		boolean foundCollision = false;
+		int countItems = 0;
+        Planet planet = null;
+
+		while (!foundCollision && countItems < items.size()) {
+
+			Item item = items.get(countItems);
+			if (item instanceof Planet) {
+				planet = (Planet) item;
+
+				if (planet != objective) {
+					foundCollision = planet.contains(center);
+				}
+			}
+
+			countItems++;
+		}
+
+		return planet;
 	}
 }

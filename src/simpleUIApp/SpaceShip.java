@@ -6,6 +6,8 @@ import java.awt.geom.Point2D;
 
 class SpaceShip extends Item {
 
+    private enum Direction { UP, DOWN, LEFT, RIGHT, NONE}
+
 	private Item objective;
 
 	public SpaceShip(double x, double y, int w) {
@@ -28,25 +30,43 @@ class SpaceShip extends Item {
 		return squareDistance(this.center, p) <= (getWidth() / 2) * (getWidth() / 2);
 	}
 
-	public void move() {
+	@Override
+	public void action() {
 
 		if (!objective.contains(this.center)) {
-			double newx = center.getX();
-			double newy = center.getY();
-			if (newx > objective.getLocation().getX()) {
-				newx--;
-			} else {
-				newx++;
+
+		    Direction dirX = Direction.NONE;
+		    Direction dirY = Direction.NONE;
+
+			double newX = center.getX();
+			double newY = center.getY();
+			if (newX > objective.getLocation().getX()) {
+				newX--;
+				dirX = Direction.LEFT;
+			} else if (newX < objective.getLocation().getX()) {
+				newX++;
+                dirX = Direction.RIGHT;
 			}
-			if (newy > objective.getLocation().getY()) {
-				newy--;
-			} else {
-				newy++;
+			if (newY > objective.getLocation().getY()) {
+				newY--;
+				dirY = Direction.UP;
+			} else if (newY < objective.getLocation().getY()) {
+				newY++;
+				dirY = Direction.DOWN;
 			}
-			center.setLocation(newx, newy);
+
+			Planet planet = Planet.checkPlanetCollisions((Planet)objective, new Point2D.Double(this.center.getX() + newX, this.center.getY() + newY));
+			if (objective instanceof Planet && planet != null) {
+
+                //TODO Rediriger le vaisseau dans la direction adéquate (random ou trigo? (PI/4 puis changer de maniere bien))
+            }
+
+			center.setLocation(newX, newY);
 		} else {
 			objective = this;
 		}
+
+
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class Main {
 				if (items.get(countItem) instanceof Planet) {
 					
 					Planet checkPlanet = (Planet) items.get(countItem);
-					contains = checkPlanet.containsPlanet(planet);
+					contains = checkPlanet.containsItem(planet);
 				}
 				
 				countItem++;
@@ -40,10 +40,9 @@ public class Main {
 				items.add(planet);
 			}
 		}
+
 		
 		Planet.setItems(items);
-		//planets.add(new Planet(100, 100, randomSize));
-		
 		
 		Manager manager = new Manager();
 		Run r = new Run(widthWindow, heightWindow);
