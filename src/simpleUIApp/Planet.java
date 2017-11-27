@@ -44,7 +44,7 @@ public class Planet extends Item {
 		Point2D planetCoord = this.center;
 		SpaceShip spaceShip;
 		double ray = this.getWidth()/2;
-		double angle = ((360.f * Math.PI) / 180.f)/nbLaunchingUnits;
+		double angle = (2 * Math.PI)/nbLaunchingUnits;
 		double sumAngle = angle;
 		for (int count = 0; count < nbLaunchingUnits; count++) {
 
