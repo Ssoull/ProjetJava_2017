@@ -6,9 +6,11 @@ import java.util.ArrayList;
 
 public class Planet extends Item {
 	
-	private final int DISTANCE_MIN = 100;
+	private final int DISTANCE_MIN_BETWEEN_PLANETS = 100;
+	private final int DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP = 15;
 	private static ArrayList<Item> items;
 	private int nbUnit;
+	private int maxLaunchingUnits = 10;
 
 	Planet(double x, double y, int w) {
 		super(x, y, w, false);
@@ -35,10 +37,25 @@ public class Planet extends Item {
 	@Override
 	public void setObjective(Item o) {
 
+		int nbLaunchingUnits;
+
+		nbLaunchingUnits = maxLaunchingUnits >= nbUnit ? nbUnit : maxLaunchingUnits;
+
 		Point2D planetCoord = this.center;
-		SpaceShip spaceShip = new SpaceShip(planetCoord.getX(), planetCoord.getY(), 10);
-		spaceShip.setObjective(o);
-		items.add(spaceShip);
+		SpaceShip spaceShip;
+		double ray = this.getWidth()/2;
+		double angle = ((360.f * Math.PI) / 180.f)/nbLaunchingUnits;
+		double sumAngle = angle;
+		for (int count = 0; count < nbLaunchingUnits; count++) {
+
+			spaceShip = new SpaceShip(planetCoord.getX() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.cos(sumAngle)),
+									  planetCoord.getY() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.sin(sumAngle)), 10);
+			spaceShip.setObjective(o);
+			items.add(spaceShip);
+
+			sumAngle += angle;
+			nbUnit--;
+		}
 	}
 
 	private double distanceBetween2Points(Point2D p1, Point2D p2) {
@@ -55,7 +72,7 @@ public class Planet extends Item {
 	}
 
 	boolean containsItem(Planet planet) {
-		return distanceBetween2Points(planet.center, this.center) <= (getWidth()/2 + DISTANCE_MIN) + (planet.getWidth()/2);
+		return distanceBetween2Points(planet.center, this.center) <= (getWidth()/2 + DISTANCE_MIN_BETWEEN_PLANETS) + (planet.getWidth()/2);
 	}
 
 	static Planet checkPlanetCollisions(Planet objective, Point2D center) {
@@ -76,6 +93,10 @@ public class Planet extends Item {
 			}
 
 			countItems++;
+		}
+
+		if (!foundCollision) {
+			return null;
 		}
 
 		return planet;
