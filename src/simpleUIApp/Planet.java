@@ -27,7 +27,7 @@ public class Planet extends Item {
 		Point2D pos = this.center;
 		int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
 		arg0.setColor(Color.green);
-		arg0.fillOval(x - w / 2, y - w / 2, w, w);
+		arg0.fillRect(x - w / 2, y - w / 2, w, w);
 
         arg0.setColor(Color.black);
         String test = Integer.toString(nbUnit);
@@ -44,7 +44,7 @@ public class Planet extends Item {
 		Point2D planetCoord = this.center;
 		SpaceShip spaceShip;
 		double ray = this.getWidth()/2;
-		double angle = (2 * Math.PI)/nbLaunchingUnits;
+		double angle = ((360.f * Math.PI) / 180.f)/nbLaunchingUnits;
 		double sumAngle = angle;
 		for (int count = 0; count < nbLaunchingUnits; count++) {
 
@@ -64,7 +64,9 @@ public class Planet extends Item {
 
 	@Override
 	public boolean contains(Point2D p) {
-		return distanceBetween2Points(this.center, p) <= getWidth()/2;
+		//return distanceBetween2Points(this.center, p) <= getWidth()/2;  //CIRCULAR PLANET
+		Point2D UL = new Point2D.Double(this.center.getX() - (getWidth()/2), this.center.getY() - (getWidth()/2));
+		return p.getX() >= UL.getX() && p.getX() <= UL.getX() + getWidth() && p.getY() >= UL.getY() && p.getY() <= UL.getY() + getWidth();
 	}
 	
 	static void setItems(ArrayList<Item> items) {

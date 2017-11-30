@@ -14,7 +14,7 @@ abstract class Item {
 	private final int width;
 
 	public Item(double x, double y, int w, boolean movable) {
-		center = new Point2D.Double(x, y);
+		center = new Point2D.Double((double)((int)x), (double)((int) y));
 		width = w;
 		this.movable = movable;
 	}
