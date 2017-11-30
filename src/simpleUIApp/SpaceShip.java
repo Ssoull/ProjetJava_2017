@@ -126,22 +126,28 @@ class SpaceShip extends Item {
 
                 }
                 if(dirX == Direction.NONE ){
-                    newX = center.getX() - 1;
+                    if(this.center.getY() < planet.center.getY())
+                        newX = center.getX() - 1;
+                    else
+                        newX = center.getX() + 1;
                     newY = center.getY();
                     if(!isDodgingX)
                      isDodgingX = true;
                 }
 
                 if(dirY == Direction.NONE ){
-                    newY = center.getY() - 1;
-                    newX= center.getX();
+                    if(this.center.getX() < planet.center.getX())
+                        newY = center.getY() - 1;
+                    else
+                        newY = center.getY() + 1;
+                    newX = center.getX();
                 }
 
-                if(isDodgingX && center.getX() <= UL.getX()) {
+                if(isDodgingX && (center.getX() <= UL.getX() || center.getX()  > UL.getX() + planet.getWidth())) {
                     isDodgingX = false;
                 }
 
-                if(isDodgingY && center.getY() <= UL.getY()) {
+                if(isDodgingY && (center.getY() <= UL.getY() || center.getY()  > UL.getY() + planet.getWidth())) {
                     isDodgingY = false;
                 }
 
