@@ -36,8 +36,8 @@ import javax.swing.JPanel;
  *            type of elements to be handle
  */
 public class Arena<I> {
-	final Collection<? extends I> itemCollection;
-	final ItemManager<? super I> itemManager;
+	final Collection<I> itemCollection;
+	final ItemManager<I> itemManager;
 	private final CopyOnWriteArrayList<ArenaComponent> listeners = new CopyOnWriteArrayList<ArenaComponent>();
 
 	/**
@@ -49,7 +49,7 @@ public class Arena<I> {
 	 * @param itemManager
 	 *            the {@link ItemManager} used to handle the items of itemCollection
 	 */
-	Arena(Collection<? extends I> itemCollection, ItemManager<? super I> itemManager) {
+	Arena(Collection<I> itemCollection, ItemManager<I> itemManager) {
 		this.itemCollection = itemCollection;
 		this.itemManager = itemManager;
 	}

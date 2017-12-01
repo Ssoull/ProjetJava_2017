@@ -23,5 +23,5 @@ public interface ApplicationRunnable<I> {
 	 *            A Collection of items which will be used by the {@link Arena} for
 	 *            drawing purpose.
 	 */
-	public void run(Arena<I> arenaModel, Collection<? extends I> itemCollection);
+	public void run(Arena<I> arenaModel, Collection<I> itemCollection);
 }
