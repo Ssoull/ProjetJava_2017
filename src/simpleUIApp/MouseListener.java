@@ -15,45 +15,58 @@ public class MouseListener implements MouseHandler<Item> {
 	}
 
 	@Override
-	public void mouseClicked(List<Item> arg0, KeyPress arg1) {
-		System.out.println("Select " + arg0 + " " + arg1);
-		for (Item testItem : arg0) {
+	public void mouseClicked(List<Item> items, KeyPress keyPress) {
+		System.out.println("Select " + items + " " + keyPress);
+		for (Item testItem : items) {
 			System.out.println("Mouse click " + testItem);
 		}
 	}
 
 	@Override
-	public void mouseDrag(List<Item> arg0, KeyPress arg1) {
-		dragList = new ArrayList<Item>(arg0);
+	public void mouseDrag(List<Item> items, KeyPress arg1) {
+		dragList = new ArrayList<Item>(items);
 		System.out.println("Drag :" + dragList);
 	}
 
 	@Override
-	public void mouseDragging(List<Item> arg0, KeyPress arg1) {
-		if (!arg0.isEmpty())
-			System.out.println("Dragging :" + arg0);
+	public void mouseDragging(List<Item> items, KeyPress keyPress) {
+		if (!items.isEmpty())
+			System.out.println("Dragging :" + items);
 	}
 
 	@Override
-	public void mouseDrop(List<Item> arg0, KeyPress arg1) {
-		System.out.println("Drag& Drop :" + dragList + " => " + arg0 + " using " + arg1.toString());
-		if (!arg0.isEmpty()) {
+	public void mouseDrop(List<Item> items, KeyPress keyPress) {
+		System.out.println("Drag& Drop :" + dragList + " => " + items + " using " + keyPress.toString());
+		if (!items.isEmpty()) {
 			for (Item item : dragList) {
-				item.setObjective(arg0.get(0));
+				item.setObjective(items.get(0));
 			}
 		}
 	}
 
 	@Override
-	public void mouseOver(List<Item> arg0, KeyPress arg1) {
+	public void mouseOver(List<Item> items, KeyPress keyPress) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mouseWheelMoved(List<Item> arg0, KeyPress arg1, int arg2) {
-		// TODO Auto-generated method stub
-		System.out.println(arg0 + " using " + arg1.toString() + " wheel rotate " + arg2);
-	}
+	public void mouseWheelMoved(List<Item> items, KeyPress keyPress, int offset_wheel) {
 
+        for(Item item : items)
+            if(item instanceof Planet){
+                Planet planet = (Planet) item;
+
+                switch (keyPress) {
+					case UNKNOWN:
+						planet.incrementPercentageToSend(offset_wheel);
+						break;
+
+					case CRTL:
+						planet.incrementPercentageToSend(offset_wheel * 10);
+						break;
+				}
+            }
+        System.out.println(items + " using " + keyPress.toString() + " wheel rotate " + offset_wheel);
+    }
 }

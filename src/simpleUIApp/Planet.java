@@ -3,23 +3,29 @@ package simpleUIApp;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Planet extends Item {
 	
 	private final int DISTANCE_MIN_BETWEEN_PLANETS = 100;
 	private final int DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP = 15;
 	private static ArrayList<Item> items;
+
+	private static ArrayList<SpaceShip> spaceShipsToDelete;
 	private int nbUnit;
-	private int maxLaunchingUnits = 10;
+
+	private int percentageToSend;
 
 	Planet(double x, double y, int w) {
 		super(x, y, w, false);
         nbUnit = 0;
+        percentageToSend = 0;
+        spaceShipsToDelete = new ArrayList<>();
 	}
 
 	@Override
 	public void action() {
-		++nbUnit;
+		nbUnit+=100;
 	}
 
 	@Override
@@ -30,8 +36,10 @@ public class Planet extends Item {
 		arg0.fillRect(x - w / 2, y - w / 2, w, w);
 
         arg0.setColor(Color.black);
-        String test = Integer.toString(nbUnit);
-		arg0.drawString(test, x - ((float)test.length()/2 * 6.5f), y + 5);
+        String nbUnitDisplay = Integer.toString(nbUnit);
+        String percentageDisplay = Integer.toString(percentageToSend) + "%";
+		arg0.drawString(nbUnitDisplay, x - ((float)nbUnitDisplay.length()/2 * 6.5f), y);
+	    arg0.drawString(percentageDisplay, x - ((float)percentageDisplay.length()/2 * 6.5f), y + 15);
 	}
 
 	@Override
@@ -39,8 +47,7 @@ public class Planet extends Item {
 
 		int nbLaunchingUnits;
 
-		nbLaunchingUnits = maxLaunchingUnits >= nbUnit ? nbUnit : maxLaunchingUnits;
-
+	 	nbLaunchingUnits = Math.round((float)(nbUnit * (percentageToSend/100.0)));
 		Point2D planetCoord = this.center;
 		SpaceShip spaceShip;
 		double ray = this.getWidth()/2;
@@ -65,8 +72,8 @@ public class Planet extends Item {
 	@Override
 	public boolean contains(Point2D p) {
 		//return distanceBetween2Points(this.center, p) <= getWidth()/2;  //CIRCULAR PLANET
-		Point2D UL = new Point2D.Double(this.center.getX() - (getWidth()/2), this.center.getY() - (getWidth()/2));
-		return p.getX() >= UL.getX() && p.getX() <= UL.getX() + getWidth() && p.getY() >= UL.getY() && p.getY() <= UL.getY() + getWidth();
+		Point2D upper_left = new Point2D.Double(this.center.getX() - (getWidth()/2), this.center.getY() - (getWidth()/2));
+		return p.getX() >= upper_left.getX() && p.getX() <= upper_left.getX() + getWidth() && p.getY() >= upper_left.getY() && p.getY() <= upper_left.getY() + getWidth();
 	}
 	
 	static void setItems(ArrayList<Item> items) {
@@ -103,4 +110,30 @@ public class Planet extends Item {
 
 		return planet;
 	}
+
+    public void incrementPercentageToSend(int percentageToSend) {
+
+		if(this.percentageToSend + percentageToSend <= 100 &&
+                this.percentageToSend + percentageToSend >= 0) {
+            this.percentageToSend += percentageToSend;
+        }
+	}
+
+	public static void addSpaceShipToDelete(SpaceShip ship, Planet planet) {
+		if(ship != null) {
+            spaceShipsToDelete.add(ship);
+            planet.nbUnit--;
+        }
+	}
+
+    public static void deleteSpaceShipList() {
+
+        Iterator<SpaceShip> it = spaceShipsToDelete.iterator();
+        while (it.hasNext()) {
+            Item item = it.next();
+            if (items.contains(item)) {
+                items.remove(item);
+            }
+        }
+    }
 }

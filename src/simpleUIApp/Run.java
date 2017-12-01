@@ -53,6 +53,7 @@ public class Run implements ApplicationRunnable<Item> {
 		Application.timer(100, new TimerRunnable() {
 
 			public void run(TimerTask timerTask) {
+				Planet.deleteSpaceShipList();
 				arg0.refresh();
 				for (Item item : arg1) {
 					if (item instanceof SpaceShip)

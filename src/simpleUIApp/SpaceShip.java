@@ -1,7 +1,5 @@
 package simpleUIApp;
 
-import com.sun.javafx.event.DirectEvent;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -13,12 +11,14 @@ class SpaceShip extends Item {
     private Item objective;
     private boolean isDodgingX;
     private boolean isDodgingY;
+    private boolean toDestroy;
 
     public SpaceShip(double x, double y, int w) {
         super(x, y, w, true);
         objective = this;
         isDodgingX = false;
         isDodgingY = false;
+        toDestroy = false;
     }
 
     public void setObjective(Item o) {
@@ -73,27 +73,27 @@ class SpaceShip extends Item {
 
                 double angleRads = Math.atan2(newX - planet.center.getX(), newY - planet.center.getY());
 
-                Point2D UL = new Point2D.Double(planet.center.getX() - (planet.getWidth()/2), planet.center.getY() - (planet.getWidth()/2));
+                Point2D UL = new Point2D.Double(planet.center.getX() - (planet.getWidth() / 2), planet.center.getY() - (planet.getWidth() / 2));
 
                 boolean verif = newX >= UL.getX();
                 double test = UL.getX() + planet.getWidth();
                 boolean verif2 = newX <= test;
                 boolean verif3 = newY >= UL.getY();
                 boolean verif4 = newY <= UL.getY() + planet.getWidth();
-                if(verif && verif2 && verif3 && verif4 && !isDodgingX && !isDodgingY) {
-                    if(dirX == Direction.RIGHT && dirY == Direction.NONE){
+                if (verif && verif2 && verif3 && verif4 && !isDodgingX && !isDodgingY) {
+                    if (dirX == Direction.RIGHT && dirY == Direction.NONE) {
                         isDodgingY = true;
                     }
-                    if(dirX == Direction.RIGHT && dirY == Direction.UP){
-                        if(this.center.getX() <= UL.getX()){
+                    if (dirX == Direction.RIGHT && dirY == Direction.UP) {
+                        if (this.center.getX() <= UL.getX()) {
                             newX = center.getX();
-                            newY = center.getY()-1;
+                            newY = center.getY() - 1;
                         } else {
-                            newX = center.getX()+1;
+                            newX = center.getX() + 1;
                             newY = center.getY();
                         }
                     }
-                    if(dirX == Direction.RIGHT && dirY == Direction.DOWN) {
+                    if (dirX == Direction.RIGHT && dirY == Direction.DOWN) {
                         if (this.center.getX() <= UL.getX()) {
                             newX = center.getX();
                             newY = center.getY() + 1;
@@ -102,20 +102,20 @@ class SpaceShip extends Item {
                             newY = center.getY();
                         }
                     }
-                    if(dirX == Direction.LEFT && dirY == Direction.NONE) {
-                        isDodgingY =true;
+                    if (dirX == Direction.LEFT && dirY == Direction.NONE) {
+                        isDodgingY = true;
                     }
-                    if(dirX == Direction.LEFT && dirY == Direction.UP){
-                        if(this.center.getX() >= UL.getX()+planet.getWidth()){
+                    if (dirX == Direction.LEFT && dirY == Direction.UP) {
+                        if (this.center.getX() >= UL.getX() + planet.getWidth()) {
                             newX = center.getX();
-                            newY = center.getY()-1;
+                            newY = center.getY() - 1;
                         } else {
-                            newX = center.getX()-1;
+                            newX = center.getX() - 1;
                             newY = center.getY();
                         }
                     }
-                    if(dirX == Direction.LEFT && dirY == Direction.DOWN) {
-                        if (this.center.getX() >= UL.getX() +planet.getWidth()) {
+                    if (dirX == Direction.LEFT && dirY == Direction.DOWN) {
+                        if (this.center.getX() >= UL.getX() + planet.getWidth()) {
                             newX = center.getX();
                             newY = center.getY() + 1;
                         } else {
@@ -125,29 +125,29 @@ class SpaceShip extends Item {
                     }
 
                 }
-                if(dirX == Direction.NONE ){
-                    if(this.center.getY() < planet.center.getY())
+                if (dirX == Direction.NONE) {
+                    if (this.center.getY() < planet.center.getY())
                         newX = center.getX() - 1;
                     else
                         newX = center.getX() + 1;
                     newY = center.getY();
-                    if(!isDodgingX)
-                     isDodgingX = true;
+                    if (!isDodgingX)
+                        isDodgingX = true;
                 }
 
-                if(dirY == Direction.NONE ){
-                    if(this.center.getX() < planet.center.getX())
+                if (dirY == Direction.NONE) {
+                    if (this.center.getX() < planet.center.getX())
                         newY = center.getY() - 1;
                     else
                         newY = center.getY() + 1;
                     newX = center.getX();
                 }
 
-                if(isDodgingX && (center.getX() <= UL.getX() || center.getX()  > UL.getX() + planet.getWidth())) {
+                if (isDodgingX && (center.getX() <= UL.getX() || center.getX() > UL.getX() + planet.getWidth())) {
                     isDodgingX = false;
                 }
 
-                if(isDodgingY && (center.getY() <= UL.getY() || center.getY()  > UL.getY() + planet.getWidth())) {
+                if (isDodgingY && (center.getY() <= UL.getY() || center.getY() > UL.getY() + planet.getWidth())) {
                     isDodgingY = false;
                 }
 
@@ -159,14 +159,14 @@ class SpaceShip extends Item {
 				if(newX - planet.center.getX() < 1)
 					newX+=Math.sin(angleRads);
 				newY = planet.center.getY() + (((planet.getWidth()) /2) * Math.cos(angleRads));*/
-
-
-
             }
 
             center.setLocation(newX, newY);
         } else {
-            objective = this;
+            if(objective instanceof Planet) {
+                Planet.addSpaceShipToDelete(this, (Planet) objective);
+                objective = this;
+            }
         }
 
 
