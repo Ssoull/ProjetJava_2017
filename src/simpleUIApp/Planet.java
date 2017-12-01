@@ -65,8 +65,8 @@ public class Planet extends Item {
 	@Override
 	public boolean contains(Point2D p) {
 		//return distanceBetween2Points(this.center, p) <= getWidth()/2;  //CIRCULAR PLANET
-		Point2D UL = new Point2D.Double(this.center.getX() - (getWidth()/2), this.center.getY() - (getWidth()/2));
-		return p.getX() >= UL.getX() && p.getX() <= UL.getX() + getWidth() && p.getY() >= UL.getY() && p.getY() <= UL.getY() + getWidth();
+		Point2D upper_left = new Point2D.Double(this.center.getX() - (getWidth()/2), this.center.getY() - (getWidth()/2));
+		return p.getX() >= upper_left.getX() && p.getX() <= upper_left.getX() + getWidth() && p.getY() >= upper_left.getY() && p.getY() <= upper_left.getY() + getWidth();
 	}
 	
 	static void setItems(ArrayList<Item> items) {
