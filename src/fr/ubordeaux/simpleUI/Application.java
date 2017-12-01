@@ -47,7 +47,7 @@ public class Application {
 	 * @param runnable
 	 *            an instance of an implementation of {@link ApplicationRunnable}
 	 */
-	public static <I> void run(final Collection<? extends I> itemCollection, final ItemManager<? super I> itemManager,
+	public static <I> void run(final Collection<I> itemCollection, final ItemManager<I> itemManager,
 			final ApplicationRunnable<I> runnable) {
 
 		try {
