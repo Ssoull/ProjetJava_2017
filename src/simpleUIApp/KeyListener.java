@@ -36,6 +36,10 @@ public class KeyListener implements KeyHandler {
 		case '-':
 			System.out.println("- has been typed");
 			break;
+		case 's':
+			Planet.savedPlanetAndSpaceShips();
+			break;
+
 		default:
 			// do nothing
 			break;

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class Planet extends Item {
 	
@@ -16,16 +17,25 @@ public class Planet extends Item {
 
 	private int percentageToSend;
 
+	private int speedSpaceShips;
+	private int timerProductionSpaceShips;
+	private int attackSpaceShips;
+
 	Planet(double x, double y, int w) {
 		super(x, y, w, false);
         nbUnit = 0;
         percentageToSend = 0;
         spaceShipsToDelete = new ArrayList<>();
+
+        Random random = new Random();
+        speedSpaceShips = random.nextInt(3 - 1) + 1;
+        timerProductionSpaceShips = random.nextInt(2000 - 500) + 500;
+        attackSpaceShips = random.nextInt(3 - 1) + 1;
 	}
 
 	@Override
 	public void action() {
-		nbUnit+=100;
+		nbUnit++;
 	}
 
 	@Override
@@ -36,7 +46,7 @@ public class Planet extends Item {
 		arg0.fillRect(x - w / 2, y - w / 2, w, w);
 
         arg0.setColor(Color.black);
-        String nbUnitDisplay = Integer.toString(nbUnit);
+        String nbUnitDisplay = "v:" + Integer.toString(nbUnit);
         String percentageDisplay = Integer.toString(percentageToSend) + "%";
 		arg0.drawString(nbUnitDisplay, x - ((float)nbUnitDisplay.length()/2 * 6.5f), y);
 	    arg0.drawString(percentageDisplay, x - ((float)percentageDisplay.length()/2 * 6.5f), y + 15);
@@ -56,7 +66,7 @@ public class Planet extends Item {
 		for (int count = 0; count < nbLaunchingUnits; count++) {
 
 			spaceShip = new SpaceShip(planetCoord.getX() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.cos(sumAngle)),
-									  planetCoord.getY() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.sin(sumAngle)), 10);
+									  planetCoord.getY() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.sin(sumAngle)), 10, attackSpaceShips, speedSpaceShips);
 			spaceShip.setObjective(o);
 			items.add(spaceShip);
 
@@ -122,7 +132,7 @@ public class Planet extends Item {
 	public static void addSpaceShipToDelete(SpaceShip ship, Planet planet) {
 		if(ship != null) {
             spaceShipsToDelete.add(ship);
-            planet.nbUnit--;
+            planet.nbUnit -= ship.getAttack();
         }
 	}
 
@@ -135,5 +145,13 @@ public class Planet extends Item {
                 items.remove(item);
             }
         }
+    }
+
+    public int getTimerProductionSpaceShips() {
+	    return timerProductionSpaceShips;
+    }
+
+    static void savedPlanetAndSpaceShips() {
+
     }
 }

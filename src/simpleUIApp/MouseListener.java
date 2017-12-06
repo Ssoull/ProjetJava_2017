@@ -65,6 +65,8 @@ public class MouseListener implements MouseHandler<Item> {
 					case CRTL:
 						planet.incrementPercentageToSend(offset_wheel * 10);
 						break;
+
+
 				}
             }
         System.out.println(items + " using " + keyPress.toString() + " wheel rotate " + offset_wheel);

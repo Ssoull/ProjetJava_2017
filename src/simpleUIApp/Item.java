@@ -2,12 +2,13 @@ package simpleUIApp;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
 /**
  * Any graphical element that will be handle by the application.
  *
  */
-abstract class Item {
+abstract class Item implements Serializable {
 
 	protected final Point2D center;
 	protected boolean movable;

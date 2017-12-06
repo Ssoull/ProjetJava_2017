@@ -12,11 +12,17 @@ class SpaceShip extends Item {
     private boolean isDodgingX;
     private boolean isDodgingY;
 
-    public SpaceShip(double x, double y, int w) {
+    private int attack;
+    private int speed;
+
+    public SpaceShip(double x, double y, int w, int attack, int speed) {
         super(x, y, w, true);
         objective = this;
         isDodgingX = false;
         isDodgingY = false;
+
+        this.attack = attack;
+        this.speed = speed;
     }
 
     public void setObjective(Item o) {
@@ -46,19 +52,19 @@ class SpaceShip extends Item {
             double newY = center.getY();
             if (!isDodgingX ) {
                 if (newX > objective.getLocation().getX()) {
-                    newX--;
+                    newX -= speed;
                     dirX = Direction.LEFT;
                 } else if (newX < objective.getLocation().getX()) {
-                    newX++;
+                    newX += speed;
                     dirX = Direction.RIGHT;
                 }
             }
             if (!isDodgingY){
                 if (newY > objective.getLocation().getY()) {
-                    newY--;
+                    newY -= speed;
                     dirY = Direction.UP;
                 } else if (newY < objective.getLocation().getY()) {
-                    newY++;
+                    newY += speed;
                     dirY = Direction.DOWN;
                 }
             }
@@ -86,18 +92,18 @@ class SpaceShip extends Item {
                         if (dirX == Direction.RIGHT && dirY == Direction.UP) {
                             if (this.center.getX() <= upper_left.getX()) {
                                 newX = center.getX();
-                                newY = center.getY() - 1;
+                                newY = center.getY() - speed;
                             } else {
-                                newX = center.getX() + 1;
+                                newX = center.getX() + speed;
                                 newY = center.getY();
                             }
                         }
                         if (dirX == Direction.RIGHT && dirY == Direction.DOWN) {
                             if (this.center.getX() <= upper_left.getX()) {
                                 newX = center.getX();
-                                newY = center.getY() + 1;
+                                newY = center.getY() + speed;
                             } else {
-                                newX = center.getX() + 1;
+                                newX = center.getX() + speed;
                                 newY = center.getY();
                             }
                         }
@@ -107,18 +113,18 @@ class SpaceShip extends Item {
                         if (dirX == Direction.LEFT && dirY == Direction.UP) {
                             if (this.center.getX() >= upper_left.getX() + planet.getWidth()) {
                                 newX = center.getX();
-                                newY = center.getY() - 1;
+                                newY = center.getY() - speed;
                             } else {
-                                newX = center.getX() - 1;
+                                newX = center.getX() - speed;
                                 newY = center.getY();
                             }
                         }
                         if (dirX == Direction.LEFT && dirY == Direction.DOWN) {
                             if (this.center.getX() >= upper_left.getX() + planet.getWidth()) {
                                 newX = center.getX();
-                                newY = center.getY() + 1;
+                                newY = center.getY() + speed;
                             } else {
-                                newX = center.getX() - 1;
+                                newX = center.getX() - speed;
                                 newY = center.getY();
                             }
                         }
@@ -126,10 +132,10 @@ class SpaceShip extends Item {
                     }
                     if (dirX == Direction.NONE) {
                         if (this.center.getY() < planet.center.getY()) {
-                            newX = center.getX() - 1;
+                            newX = center.getX() - speed;
                         }
                         else {
-                            newX = center.getX() + 1;
+                            newX = center.getX() + speed;
                         }
 
                         newY = center.getY();
@@ -141,10 +147,10 @@ class SpaceShip extends Item {
 
                     if (dirY == Direction.NONE) {
                         if (this.center.getX() < planet.center.getX()) {
-                            newY = center.getY() - 1;
+                            newY = center.getY() - speed;
                         }
                         else {
-                            newY = center.getY() + 1;
+                            newY = center.getY() + speed;
                         }
 
                         newX = center.getX();
@@ -188,5 +194,9 @@ class SpaceShip extends Item {
         int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
         arg0.setColor(Color.blue);
         arg0.fillRect(x - w / 2, y - w / 2, w, w);
+    }
+
+    public int getAttack() {
+        return attack;
     }
 }

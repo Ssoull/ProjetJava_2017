@@ -63,17 +63,18 @@ public class Run implements ApplicationRunnable<Item> {
 
 		});
 
-		Application.timer(1000, new TimerRunnable() {
+		for (Item item : arg1) {
 
-			public void run(TimerTask timerTask) {
-				arg0.refresh();
-				for (Item item : arg1) {
-					if (item instanceof Planet)
+			if (item instanceof Planet) {
+				Application.timer(((Planet) item).getTimerProductionSpaceShips(), new TimerRunnable() {
+
+					public void run(TimerTask timerTask) {
+						arg0.refresh();
 						item.action();
-				}
+					}
+				});
 			}
-
-		});
+		}
 	}
 
 }
