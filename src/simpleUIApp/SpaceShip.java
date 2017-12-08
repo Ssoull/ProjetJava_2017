@@ -210,7 +210,10 @@ class SpaceShip extends Item {
     public void draw(Graphics2D arg0) {
         Point2D pos = this.center;
         int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
-        arg0.setColor(Color.blue);
+        if(origin.getType() == Type.PLAYER)
+            arg0.setColor(Color.BLUE);
+        if(origin.getType() == Type.IA)
+            arg0.setColor(Color.BLACK);
         arg0.fillRect(x - w / 2, y - w / 2, w, w);
     }
 
