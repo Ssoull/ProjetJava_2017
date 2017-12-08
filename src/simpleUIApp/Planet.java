@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+enum Type {PLAYER, NEUTRAL, IA}
+
 public class Planet extends Item {
 	
 	private final int DISTANCE_MIN_BETWEEN_PLANETS = 100;
@@ -21,28 +23,58 @@ public class Planet extends Item {
 	private int timerProductionSpaceShips;
 	private int attackSpaceShips;
 
+    private Type type;
+
 	Planet(double x, double y, int w) {
 		super(x, y, w, false);
         nbUnit = 0;
-        percentageToSend = 0;
+        percentageToSend = 50;
         spaceShipsToDelete = new ArrayList<>();
 
         Random random = new Random();
-        speedSpaceShips = random.nextInt(3 - 1) + 1;
+        speedSpaceShips = 5;//random.nextInt(3 - 1) + 1;
         timerProductionSpaceShips = random.nextInt(2000 - 500) + 500;
         attackSpaceShips = random.nextInt(3 - 1) + 1;
 	}
 
+    Planet (double x, double y, int w, Type type){
+        super(x,y,w, false);
+        this.type = type;
+        nbUnit = 0;
+        percentageToSend = 50;
+        spaceShipsToDelete = new ArrayList<>();
+
+        Random random = new Random();
+        speedSpaceShips = random.nextInt(3 - 2) + 1;
+        timerProductionSpaceShips = random.nextInt(2000 - 500) + 500;
+        attackSpaceShips = random.nextInt(3 - 1) + 1;
+
+    }
+
 	@Override
 	public void action() {
-		nbUnit++;
+        if(this.type == Type.PLAYER || this.type == Type.IA)
+		    nbUnit++;
 	}
 
 	@Override
 	public void draw(Graphics2D arg0) {
 		Point2D pos = this.center;
 		int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
-		arg0.setColor(Color.green);
+		    arg0.setColor(Color.red);
+		switch (this.type){
+            case PLAYER:
+                arg0.setColor(Color.GREEN);
+                break;
+            case NEUTRAL:
+                arg0.setColor(Color.LIGHT_GRAY);
+                break;
+            case IA:
+                arg0.setColor(Color.RED);
+                break;
+            default:
+                break;
+        }
 		arg0.fillRect(x - w / 2, y - w / 2, w, w);
 
         arg0.setColor(Color.black);
@@ -66,7 +98,7 @@ public class Planet extends Item {
 		for (int count = 0; count < nbLaunchingUnits; count++) {
 
 			spaceShip = new SpaceShip(planetCoord.getX() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.cos(sumAngle)),
-									  planetCoord.getY() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.sin(sumAngle)), 10, attackSpaceShips, speedSpaceShips);
+									  planetCoord.getY() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.sin(sumAngle)), 10, attackSpaceShips, speedSpaceShips,this);
 			spaceShip.setObjective(o);
 			items.add(spaceShip);
 
@@ -132,7 +164,13 @@ public class Planet extends Item {
 	public static void addSpaceShipToDelete(SpaceShip ship, Planet planet) {
 		if(ship != null) {
             spaceShipsToDelete.add(ship);
-            planet.nbUnit -= ship.getAttack();
+            if(planet.nbUnit - ship.getAttack() >= 0 && planet.getType() != ship.getOrigin().getType())
+                planet.nbUnit -= ship.getAttack();
+            else {
+                planet.nbUnit+=1;
+                planet.setType(ship.getOrigin().getType());
+            }
+
         }
 	}
 
@@ -153,5 +191,13 @@ public class Planet extends Item {
 
     static void savedPlanetAndSpaceShips() {
 
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }

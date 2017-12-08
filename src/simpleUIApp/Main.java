@@ -18,10 +18,15 @@ public class Main {
 		Planet planet;
 		while (countPlanets < 5) {
 			randomSize = random.nextInt(80-40) + 40;
-
+            if(countPlanets == 0)
 			planet = new Planet(random.nextInt(widthWindow-randomSize) + randomSize/2,
-								random.nextInt(heightWindow-randomSize) + randomSize/2, randomSize);
-			
+								random.nextInt(heightWindow-randomSize) + randomSize/2, randomSize, Type.PLAYER);
+			else if(countPlanets == 4)
+                planet = new Planet(random.nextInt(widthWindow-randomSize) + randomSize/2,
+                        random.nextInt(heightWindow-randomSize) + randomSize/2, randomSize, Type.IA);
+			else
+                planet = new Planet(random.nextInt(widthWindow-randomSize) + randomSize/2,
+                        random.nextInt(heightWindow-randomSize) + randomSize/2, randomSize, Type.NEUTRAL);
 			int countItem = 0;
 			boolean contains = false;
 			while (countItem < items.size() && !contains) {

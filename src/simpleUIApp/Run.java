@@ -57,7 +57,7 @@ public class Run implements ApplicationRunnable<Item> {
 				arg0.refresh();
 				for (Item item : arg1) {
 					if (item instanceof SpaceShip)
-						item.action();
+							item.action();
 				}
 			}
 
