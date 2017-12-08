@@ -39,7 +39,11 @@ public class MouseListener implements MouseHandler<Item> {
 		System.out.println("Drag& Drop :" + dragList + " => " + items + " using " + keyPress.toString());
 		if (!items.isEmpty()) {
 			for (Item item : dragList) {
-				item.setObjective(items.get(0));
+				if(item instanceof Planet) {
+					if (((Planet) item).getType() != Type.IA)
+						item.setObjective(items.get(0));
+				} else
+					item.setObjective(items.get(0));
 			}
 		}
 	}
@@ -53,22 +57,24 @@ public class MouseListener implements MouseHandler<Item> {
 	@Override
 	public void mouseWheelMoved(List<Item> items, KeyPress keyPress, int offset_wheel) {
 
-        for(Item item : items)
-            if(item instanceof Planet){
-                Planet planet = (Planet) item;
+		for(Item item : items)
+			if(item instanceof Planet){
+				if(((Planet) item).getType() != Type.IA || ((Planet) item).getType() != Type.NEUTRAL){
+					Planet planet = (Planet) item;
 
-                switch (keyPress) {
-					case UNKNOWN:
-						planet.incrementPercentageToSend(offset_wheel);
-						break;
+					switch (keyPress) {
+						case UNKNOWN:
+							planet.incrementPercentageToSend(offset_wheel);
+							break;
 
-					case CRTL:
-						planet.incrementPercentageToSend(offset_wheel * 10);
-						break;
+						case CRTL:
+							planet.incrementPercentageToSend(offset_wheel * 10);
+							break;
 
 
+					}
 				}
-            }
-        System.out.println(items + " using " + keyPress.toString() + " wheel rotate " + offset_wheel);
-    }
+			}
+		System.out.println(items + " using " + keyPress.toString() + " wheel rotate " + offset_wheel);
+	}
 }
