@@ -60,15 +60,15 @@ class SpaceShip extends Item {
 
     @Override
     public void action() {
-        double newX = center.getX();
-        double newY = center.getY();
-        //for(int i = 0; i< speed; i++) //TODO REPETER CETTE FONCTION speed fois
+        for(int i = 0; i< speed; i++) {
+            double newX = center.getX();
+            double newY = center.getY();
             if (!objective.contains(this.center)) {
                 Direction dirX = Direction.NONE;
                 Direction dirY = Direction.NONE;
 
 
-                if (!isDodgingX ) {
+                if (!isDodgingX) {
                     if (newX > objective.getLocation().getX()) {
                         newX -= 1;
                         dirX = Direction.LEFT;
@@ -77,7 +77,7 @@ class SpaceShip extends Item {
                         dirX = Direction.RIGHT;
                     }
                 }
-                if (!isDodgingY){
+                if (!isDodgingY) {
                     if (newY > objective.getLocation().getY()) {
                         newY -= 1;
                         dirY = Direction.UP;
@@ -87,14 +87,11 @@ class SpaceShip extends Item {
                     }
                 }
 
-                //Planet planet = Planet.checkPlanetCollisions((Planet)objective, new Point2D.Double(newX,  newY));
                 if (objective instanceof Planet) {
 
-                    Planet planet = Planet.checkPlanetCollisions((Planet)objective, this.center);
+                    Planet planet = Planet.checkPlanetCollisions((Planet) objective, this.center);
 
                     if (planet != null) {
-
-                        //double angleRads = Math.atan2(newX - planet.center.getX(), newY - planet.center.getY());
 
                         Point2D upper_left = new Point2D.Double(planet.center.getX() - (planet.getWidth() / 2), planet.center.getY() - (planet.getWidth() / 2));
 
@@ -151,8 +148,7 @@ class SpaceShip extends Item {
                         if (dirX == Direction.NONE) {
                             if (this.center.getY() < planet.center.getY()) {
                                 newX = center.getX() - 1;
-                            }
-                            else {
+                            } else {
                                 newX = center.getX() + 1;
                             }
 
@@ -166,8 +162,7 @@ class SpaceShip extends Item {
                         if (dirY == Direction.NONE) {
                             if (this.center.getX() < planet.center.getX()) {
                                 newY = center.getY() - 1;
-                            }
-                            else {
+                            } else {
                                 newY = center.getY() + 1;
                             }
 
@@ -181,29 +176,17 @@ class SpaceShip extends Item {
                         if (isDodgingY && (center.getY() <= upper_left.getY() || center.getY() > upper_left.getY() + planet.getWidth())) {
                             isDodgingY = false;
                         }
-
-
-                        //newX = this.center.getX();
-                        //newY = this.center.getY();
-
-				/*newX = planet.center.getX() + (((planet.getWidth()) /2) * Math.sin(angleRads));
-				if(newX - planet.center.getX() < 1)
-					newX+=Math.sin(angleRads);
-				newY = planet.center.getY() + (((planet.getWidth()) /2) * Math.cos(angleRads));*/
-
-
                     }
                 }
 
                 center.setLocation(newX, newY);
             } else {
-                if(objective instanceof Planet) {
+                if (objective instanceof Planet) {
                     Planet.addSpaceShipToDelete(this, (Planet) objective);
                     objective = this;
                 }
             }
-
-
+        }
     }
 
     @Override
@@ -225,15 +208,7 @@ class SpaceShip extends Item {
         return origin;
     }
 
-    public void setOrigin(Planet origin) {
-        this.origin = origin;
-    }
-
     public int getSpeed() {
         return speed;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
     }
 }

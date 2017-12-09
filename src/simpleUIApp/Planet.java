@@ -43,7 +43,7 @@ public class Planet extends Item {
         spaceShipsToDelete = new ArrayList<>();
 
         Random random = new Random();
-        speedSpaceShips = random.nextInt(3 - 2) + 1;
+        speedSpaceShips = random.nextInt(3 - 1) + 1;
         timerProductionSpaceShips = random.nextInt(2000 - 500) + 500;
         attackSpaceShips = random.nextInt(3 - 1) + 1;
 
@@ -130,7 +130,6 @@ public class Planet extends Item {
 
     @Override
     public boolean contains(Point2D p) {
-        //return distanceBetween2Points(this.center, p) <= getWidth()/2;  //CIRCULAR PLANET
         Point2D upper_left = new Point2D.Double(this.center.getX() - (getWidth()/2), this.center.getY() - (getWidth()/2));
         return p.getX() >= upper_left.getX() && p.getX() <= upper_left.getX() + getWidth() && p.getY() >= upper_left.getY() && p.getY() <= upper_left.getY() + getWidth();
     }
