@@ -2,8 +2,12 @@ package simpleUIApp;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 public class Planet extends Item {
@@ -138,20 +142,75 @@ public class Planet extends Item {
 
     public static void deleteSpaceShipList() {
 
-        Iterator<SpaceShip> it = spaceShipsToDelete.iterator();
-        while (it.hasNext()) {
-            Item item = it.next();
-            if (items.contains(item)) {
-                items.remove(item);
-            }
-        }
+	    items.removeAll(spaceShipsToDelete);
     }
 
     public int getTimerProductionSpaceShips() {
 	    return timerProductionSpaceShips;
     }
 
-    static void savedPlanetAndSpaceShips() {
+	static void savedPlanetAndSpaceShips()  {
 
-    }
+		FileOutputStream fos = null;
+		ObjectOutputStream oos = null;
+
+		try {
+			fos = new FileOutputStream("t.tmp");
+			oos = new ObjectOutputStream(fos);
+
+			for (Item item : items)
+				oos.writeObject(item);
+		}
+		catch (IOException ie) {
+			System.out.println("Error on save !!");
+		}
+		finally {
+			try {
+				if (fos != null) {
+					fos.close();
+				}
+
+				if (oos != null) {
+					oos.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	static void loadPlanetAndSpaceShips()  {
+
+		FileInputStream fis = null;
+		ObjectInputStream ois = null;
+
+		try {
+			fis = new FileInputStream("t.tmp");
+			ois = new ObjectInputStream(fis);
+
+			items.clear();
+
+			for (;;)
+				items.add((Item)ois.readObject());
+
+			for (items)
+		}
+		catch (IOException ie) {
+			System.out.println("Error on save !!");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (fis != null) {
+					fis.close();
+				}
+
+				if (ois != null) {
+					ois.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

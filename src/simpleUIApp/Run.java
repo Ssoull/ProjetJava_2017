@@ -1,6 +1,7 @@
 package simpleUIApp;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -22,7 +23,7 @@ public class Run implements ApplicationRunnable<Item> {
 	}
 
 	@Override // Possibilité de transformer le Collection<? extends Item> qu'en Collection<? extends Item>
-	public void run(final Arena<Item> arg0, Collection<Item> arg1) {
+	public void run(final Arena<Item> itemArena, Collection<Item> items) {
 		MouseListener mouseHandler = new MouseListener();
 
 		/*
@@ -37,14 +38,14 @@ public class Run implements ApplicationRunnable<Item> {
 		KeyListener keyListener = new KeyListener(frame);
 
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.add(arg0.createComponent(this.width, this.height, mouseHandler, keyListener));
+		frame.add(itemArena.createComponent(this.width, this.height, mouseHandler, keyListener));
 		frame.pack();
 		frame.setVisible(true);
 
 		/*
 		 * We initially draw the component
 		 */
-		arg0.refresh();
+		itemArena.refresh();
 
 		/*
 		 * We ask the Application to call the following run function every seconds. This
@@ -54,8 +55,8 @@ public class Run implements ApplicationRunnable<Item> {
 
 			public void run(TimerTask timerTask) {
 				Planet.deleteSpaceShipList();
-				arg0.refresh();
-				for (Item item : arg1) {
+				itemArena.refresh();
+				for (Item item : items) {
 					if (item instanceof SpaceShip)
 						item.action();
 				}
@@ -63,18 +64,22 @@ public class Run implements ApplicationRunnable<Item> {
 
 		});
 
-		for (Item item : arg1) {
+        for (Item item : items) {
 
-			if (item instanceof Planet) {
-				Application.timer(((Planet) item).getTimerProductionSpaceShips(), new TimerRunnable() {
-
-					public void run(TimerTask timerTask) {
-						arg0.refresh();
-						item.action();
-					}
-				});
-			}
-		}
+            if (item instanceof Planet) {
+                addTimerToPlanet(item, ((Planet) item).getTimerProductionSpaceShips());
+            }
+        }
 	}
+
+	static void addTimerToPlanet(Item item, int timer) {
+
+        Application.timer(timer, new TimerRunnable() {
+
+            public void run(TimerTask timerTask) {
+                item.action();
+            }
+        });
+    }
 
 }

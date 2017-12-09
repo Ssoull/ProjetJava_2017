@@ -39,6 +39,9 @@ public class KeyListener implements KeyHandler {
 		case 's':
 			Planet.savedPlanetAndSpaceShips();
 			break;
+		case 'l':
+			Planet.loadPlanetAndSpaceShips();
+			break;
 
 		default:
 			// do nothing
