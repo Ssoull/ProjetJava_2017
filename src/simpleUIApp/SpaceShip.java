@@ -13,7 +13,14 @@ class SpaceShip extends Item {
     private boolean isDodgingY;
 
     private int attack;
+
+
+
     private int speed;
+
+
+
+    private Planet origin;
 
     public SpaceShip(double x, double y, int w, int attack, int speed) {
         super(x, y, w, true);
@@ -23,6 +30,17 @@ class SpaceShip extends Item {
 
         this.attack = attack;
         this.speed = speed;
+    }
+
+    public SpaceShip(double x, double y, int w, int attack, int speed, Planet origin){
+        super(x,y,w,true);
+        objective = this;
+        isDodgingX = false;
+        isDodgingY = false;
+
+        this.attack = attack;
+        this.speed = speed;
+        this.origin = origin;
     }
 
     public void setObjective(Item o) {
@@ -42,161 +60,155 @@ class SpaceShip extends Item {
 
     @Override
     public void action() {
-
-        if (!objective.contains(this.center)) {
-
-            Direction dirX = Direction.NONE;
-            Direction dirY = Direction.NONE;
-
+        for(int i = 0; i< speed; i++) {
             double newX = center.getX();
             double newY = center.getY();
-            if (!isDodgingX ) {
-                if (newX > objective.getLocation().getX()) {
-                    newX -= speed;
-                    dirX = Direction.LEFT;
-                } else if (newX < objective.getLocation().getX()) {
-                    newX += speed;
-                    dirX = Direction.RIGHT;
+            if (!objective.contains(this.center)) {
+                Direction dirX = Direction.NONE;
+                Direction dirY = Direction.NONE;
+
+
+                if (!isDodgingX) {
+                    if (newX > objective.getLocation().getX()) {
+                        newX -= 1;
+                        dirX = Direction.LEFT;
+                    } else if (newX < objective.getLocation().getX()) {
+                        newX += 1;
+                        dirX = Direction.RIGHT;
+                    }
                 }
-            }
-            if (!isDodgingY){
-                if (newY > objective.getLocation().getY()) {
-                    newY -= speed;
-                    dirY = Direction.UP;
-                } else if (newY < objective.getLocation().getY()) {
-                    newY += speed;
-                    dirY = Direction.DOWN;
+                if (!isDodgingY) {
+                    if (newY > objective.getLocation().getY()) {
+                        newY -= 1;
+                        dirY = Direction.UP;
+                    } else if (newY < objective.getLocation().getY()) {
+                        newY += 1;
+                        dirY = Direction.DOWN;
+                    }
                 }
-            }
 
-            //Planet planet = Planet.checkPlanetCollisions((Planet)objective, new Point2D.Double(newX,  newY));
-            if (objective instanceof Planet) {
+                if (objective instanceof Planet) {
 
-                Planet planet = Planet.checkPlanetCollisions((Planet)objective, this.center);
+                    Planet planet = Planet.checkPlanetCollisions((Planet) objective, this.center);
 
-                if (planet != null) {
+                    if (planet != null) {
 
-                    //double angleRads = Math.atan2(newX - planet.center.getX(), newY - planet.center.getY());
+                        Point2D upper_left = new Point2D.Double(planet.center.getX() - (planet.getWidth() / 2), planet.center.getY() - (planet.getWidth() / 2));
 
-                    Point2D upper_left = new Point2D.Double(planet.center.getX() - (planet.getWidth() / 2), planet.center.getY() - (planet.getWidth() / 2));
+                        boolean check = newX >= upper_left.getX();
+                        double test = upper_left.getX() + planet.getWidth();
+                        boolean check_2 = newX <= test;
+                        boolean check_3 = newY >= upper_left.getY();
+                        boolean check_4 = newY <= upper_left.getY() + planet.getWidth();
+                        if (check && check_2 && check_3 && check_4 && !isDodgingX && !isDodgingY) {
+                            if (dirX == Direction.RIGHT && dirY == Direction.NONE) {
+                                isDodgingY = true;
+                            }
+                            if (dirX == Direction.RIGHT && dirY == Direction.UP) {
+                                if (this.center.getX() <= upper_left.getX()) {
+                                    newX = center.getX();
+                                    newY = center.getY() - 1;
+                                } else {
+                                    newX = center.getX() + 1;
+                                    newY = center.getY();
+                                }
+                            }
+                            if (dirX == Direction.RIGHT && dirY == Direction.DOWN) {
+                                if (this.center.getX() <= upper_left.getX()) {
+                                    newX = center.getX();
+                                    newY = center.getY() + 1;
+                                } else {
+                                    newX = center.getX() + 1;
+                                    newY = center.getY();
+                                }
+                            }
+                            if (dirX == Direction.LEFT && dirY == Direction.NONE) {
+                                isDodgingY = true;
+                            }
+                            if (dirX == Direction.LEFT && dirY == Direction.UP) {
+                                if (this.center.getX() >= upper_left.getX() + planet.getWidth()) {
+                                    newX = center.getX();
+                                    newY = center.getY() - 1;
+                                } else {
+                                    newX = center.getX() - 1;
+                                    newY = center.getY();
+                                }
+                            }
+                            if (dirX == Direction.LEFT && dirY == Direction.DOWN) {
+                                if (this.center.getX() >= upper_left.getX() + planet.getWidth()) {
+                                    newX = center.getX();
+                                    newY = center.getY() + 1;
+                                } else {
+                                    newX = center.getX() - 1;
+                                    newY = center.getY();
+                                }
+                            }
 
-                    boolean check = newX >= upper_left.getX();
-                    double test = upper_left.getX() + planet.getWidth();
-                    boolean check_2 = newX <= test;
-                    boolean check_3 = newY >= upper_left.getY();
-                    boolean check_4 = newY <= upper_left.getY() + planet.getWidth();
-                    if (check && check_2 && check_3 && check_4 && !isDodgingX && !isDodgingY) {
-                        if (dirX == Direction.RIGHT && dirY == Direction.NONE) {
-                            isDodgingY = true;
                         }
-                        if (dirX == Direction.RIGHT && dirY == Direction.UP) {
-                            if (this.center.getX() <= upper_left.getX()) {
-                                newX = center.getX();
-                                newY = center.getY() - speed;
+                        if (dirX == Direction.NONE) {
+                            if (this.center.getY() < planet.center.getY()) {
+                                newX = center.getX() - 1;
                             } else {
-                                newX = center.getX() + speed;
-                                newY = center.getY();
+                                newX = center.getX() + 1;
+                            }
+
+                            newY = center.getY();
+
+                            if (!isDodgingX) {
+                                isDodgingX = true;
                             }
                         }
-                        if (dirX == Direction.RIGHT && dirY == Direction.DOWN) {
-                            if (this.center.getX() <= upper_left.getX()) {
-                                newX = center.getX();
-                                newY = center.getY() + speed;
+
+                        if (dirY == Direction.NONE) {
+                            if (this.center.getX() < planet.center.getX()) {
+                                newY = center.getY() - 1;
                             } else {
-                                newX = center.getX() + speed;
-                                newY = center.getY();
+                                newY = center.getY() + 1;
                             }
-                        }
-                        if (dirX == Direction.LEFT && dirY == Direction.NONE) {
-                            isDodgingY = true;
-                        }
-                        if (dirX == Direction.LEFT && dirY == Direction.UP) {
-                            if (this.center.getX() >= upper_left.getX() + planet.getWidth()) {
-                                newX = center.getX();
-                                newY = center.getY() - speed;
-                            } else {
-                                newX = center.getX() - speed;
-                                newY = center.getY();
-                            }
-                        }
-                        if (dirX == Direction.LEFT && dirY == Direction.DOWN) {
-                            if (this.center.getX() >= upper_left.getX() + planet.getWidth()) {
-                                newX = center.getX();
-                                newY = center.getY() + speed;
-                            } else {
-                                newX = center.getX() - speed;
-                                newY = center.getY();
-                            }
+
+                            newX = center.getX();
                         }
 
-                    }
-                    if (dirX == Direction.NONE) {
-                        if (this.center.getY() < planet.center.getY()) {
-                            newX = center.getX() - speed;
-                        }
-                        else {
-                            newX = center.getX() + speed;
+                        if (isDodgingX && (center.getX() <= upper_left.getX() || center.getX() > upper_left.getX() + planet.getWidth())) {
+                            isDodgingX = false;
                         }
 
-                        newY = center.getY();
-
-                        if (!isDodgingX) {
-                            isDodgingX = true;
+                        if (isDodgingY && (center.getY() <= upper_left.getY() || center.getY() > upper_left.getY() + planet.getWidth())) {
+                            isDodgingY = false;
                         }
                     }
-
-                    if (dirY == Direction.NONE) {
-                        if (this.center.getX() < planet.center.getX()) {
-                            newY = center.getY() - speed;
-                        }
-                        else {
-                            newY = center.getY() + speed;
-                        }
-
-                        newX = center.getX();
-                    }
-
-                    if (isDodgingX && (center.getX() <= upper_left.getX() || center.getX() > upper_left.getX() + planet.getWidth())) {
-                        isDodgingX = false;
-                    }
-
-                    if (isDodgingY && (center.getY() <= upper_left.getY() || center.getY() > upper_left.getY() + planet.getWidth())) {
-                        isDodgingY = false;
-                    }
-
-
-                //newX = this.center.getX();
-                //newY = this.center.getY();
-
-				/*newX = planet.center.getX() + (((planet.getWidth()) /2) * Math.sin(angleRads));
-				if(newX - planet.center.getX() < 1)
-					newX+=Math.sin(angleRads);
-				newY = planet.center.getY() + (((planet.getWidth()) /2) * Math.cos(angleRads));*/
-
-
                 }
-            }
 
-            center.setLocation(newX, newY);
-        } else {
-            if(objective instanceof Planet) {
-                Planet.addSpaceShipToDelete(this, (Planet) objective);
-                objective = this;
+                center.setLocation(newX, newY);
+            } else {
+                if (objective instanceof Planet) {
+                    Planet.addSpaceShipToDelete(this, (Planet) objective);
+                    objective = this;
+                }
             }
         }
-
-
     }
 
     @Override
     public void draw(Graphics2D arg0) {
         Point2D pos = this.center;
         int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
-        arg0.setColor(Color.blue);
+        if(origin.getType() == Type.PLAYER)
+            arg0.setColor(Color.BLUE);
+        if(origin.getType() == Type.IA)
+            arg0.setColor(Color.BLACK);
         arg0.fillRect(x - w / 2, y - w / 2, w, w);
     }
 
     public int getAttack() {
         return attack;
+    }
+
+    public Planet getOrigin() {
+        return origin;
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 }
