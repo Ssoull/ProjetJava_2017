@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import fr.ubordeaux.simpleUI.*;
+import simpleUIApp.Controller.Manager;
+import simpleUIApp.Controller.Run;
+import simpleUIApp.Items.Item;
+import simpleUIApp.Items.Planet;
+import simpleUIApp.Items.Type;
 
 public class Main {
 	public static void main(String[] args) {
@@ -52,6 +57,7 @@ public class Main {
 
 		
 		Planet.setItems(items);
+        Planet.setupDelayProductionSpaceShips();
 		
 		Manager manager = new Manager();
 		Run r = new Run(widthWindow, heightWindow);
