@@ -4,6 +4,7 @@ import fr.ubordeaux.simpleUI.Application;
 import fr.ubordeaux.simpleUI.TimerRunnable;
 import fr.ubordeaux.simpleUI.TimerTask;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
@@ -35,7 +36,7 @@ public class Planet extends Item {
 
     private Type type;
 
-    Planet (double x, double y, int w, Type type){
+    public Planet (double x, double y, int w, Type type){
         super(x,y,w, false);
         this.type = type;
         nbUnit = 0;
@@ -133,11 +134,11 @@ public class Planet extends Item {
         return p.getX() >= upper_left.getX() && p.getX() <= upper_left.getX() + getWidth() && p.getY() >= upper_left.getY() && p.getY() <= upper_left.getY() + getWidth();
     }
 
-    static void setItems(ArrayList<Item> items) {
+    public static void setItems(ArrayList<Item> items) {
         Planet.items = items;
     }
 
-    boolean containsItem(Planet planet) {
+    public boolean containsItem(Planet planet) {
         return distanceBetween2Points(planet.center, this.center) <= (getWidth()/2 + DISTANCE_MIN_BETWEEN_PLANETS) + (planet.getWidth()/2);
     }
 
@@ -176,7 +177,7 @@ public class Planet extends Item {
         }
     }
 
-    public static void addSpaceShipToDelete(SpaceShip ship, Planet planet) {
+    static void addSpaceShipToDelete(SpaceShip ship, Planet planet) {
         if(ship != null) {
             spaceShipsToDelete.add(ship);
             if(planet.nbUnit - ship.getAttack() >= 0 && planet.type != ship.getOrigin().type)
@@ -189,19 +190,6 @@ public class Planet extends Item {
         }
     }
 
-    public static void setupDelayProductionSpaceShips() {
-
-        for (Item item : items) {
-			if (item instanceof Planet)
-			Application.timer(((Planet) item).timerProductionSpaceShips, new TimerRunnable() {
-
-				public void run(TimerTask timerTask) {
-					item.action();
-				}
-			});
-		}
-    }
-
     public static void deleteSpaceShipList() {
 
         items.removeAll(spaceShipsToDelete);
@@ -212,65 +200,11 @@ public class Planet extends Item {
         return type;
     }
 
-    public static void savedPlanetAndSpaceShips()  {
-
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-
-        try {
-            fos = new FileOutputStream("t.tmp");
-            oos = new ObjectOutputStream(fos);
-
-            oos.writeObject(items);
-        }
-        catch (IOException ie) {
-            System.out.println("Error on save !!");
-        }
-        finally {
-            try {
-                if (fos != null) {
-                    fos.close();
-                }
-
-                if (oos != null) {
-                    oos.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public static ArrayList<Item> getItems() {
+        return items;
     }
 
-    public static void loadPlanetAndSpaceShips()  {
-
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-
-        try {
-            fis = new FileInputStream("t.tmp");
-            ois = new ObjectInputStream(fis);
-
-            items.clear();
-            items.addAll((ArrayList<Item>)ois.readObject());
-
-
-        }
-        catch (IOException ie) {
-            System.out.println("Error on load !!");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-
-                if (ois != null) {
-                    ois.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public int getTimerProductionSpaceShips() {
+        return timerProductionSpaceShips;
     }
 }

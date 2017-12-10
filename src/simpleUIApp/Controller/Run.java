@@ -1,7 +1,6 @@
 package simpleUIApp.Controller;
 
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 import fr.ubordeaux.simpleUI.Application;
 import fr.ubordeaux.simpleUI.ApplicationRunnable;
@@ -10,6 +9,8 @@ import fr.ubordeaux.simpleUI.TimerRunnable;
 import fr.ubordeaux.simpleUI.TimerTask;
 import simpleUIApp.Items.*;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Run implements ApplicationRunnable<Item> {
@@ -57,11 +58,93 @@ public class Run implements ApplicationRunnable<Item> {
 				Planet.deleteSpaceShipList();
 				itemsArena.refresh();
 				for (Item item : items) {
-					if (item instanceof SpaceShip)
+					if (item instanceof SpaceShip && items.contains(item))
 						item.action();
 				}
 			}
 
 		});
+
+        setupDelayProductionSpaceShips();
 	}
+
+
+    public static void setupDelayProductionSpaceShips() {
+
+        for (Item item : Planet.getItems()) {
+            if (item instanceof Planet) {
+                Application.timer(((Planet) item).getTimerProductionSpaceShips(), new TimerRunnable() {
+
+                    public void run(TimerTask timerTask) {
+                        if (Planet.getItems().contains(item)) {
+                            item.action();
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+
+    public static void savedPlanetAndSpaceShips()  {
+
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+
+        try {
+            fos = new FileOutputStream("saved.tmp");
+            oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(Planet.getItems());
+        }
+        catch (IOException ie) {
+            JOptionPane.showMessageDialog(null, "Error on save !!", "/!\\ ERROR /!\\", JOptionPane.INFORMATION_MESSAGE);
+        }
+        finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+
+                if (oos != null) {
+                    oos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void loadPlanetAndSpaceShips()  {
+
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+
+        try {
+            fis = new FileInputStream("saved.tmp");
+            ois = new ObjectInputStream(fis);
+
+            Planet.getItems().clear();
+            Planet.getItems().addAll((ArrayList<Item>)ois.readObject());
+
+            setupDelayProductionSpaceShips();
+        }
+        catch (IOException ie) {
+            JOptionPane.showMessageDialog(null, "No saved file !", "/!\\ WARNING /!\\", JOptionPane.INFORMATION_MESSAGE);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+
+                if (ois != null) {
+                    ois.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

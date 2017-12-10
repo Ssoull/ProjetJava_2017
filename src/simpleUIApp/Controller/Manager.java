@@ -8,7 +8,7 @@ import java.awt.geom.Point2D;
 import fr.ubordeaux.simpleUI.ItemManager;
 import simpleUIApp.Items.Item;
 
-class Manager implements ItemManager<Item> {
+public class Manager implements ItemManager<Item> {
 
 	@Override
 	public boolean contains(Point2D arg0, Item arg1) {

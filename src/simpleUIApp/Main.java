@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import fr.ubordeaux.simpleUI.*;
-import simpleUIApp.Controller.Manager;
 import simpleUIApp.Controller.Run;
+import simpleUIApp.Controller.Manager;
 import simpleUIApp.Items.Item;
 import simpleUIApp.Items.Planet;
-import simpleUIApp.Items.Type;
 
 public class Main {
 	public static void main(String[] args) {
@@ -25,15 +24,15 @@ public class Main {
 			randomSize = random.nextInt(80-40) + 40;
             if (countPlanets == 0) {
 				planet = new Planet(random.nextInt(widthWindow - randomSize) + randomSize / 2,
-						random.nextInt(heightWindow - randomSize) + randomSize / 2, randomSize, Type.PLAYER);
+						random.nextInt(heightWindow - randomSize) + randomSize / 2, randomSize, Planet.Type.PLAYER);
 			}
 			else if (countPlanets == 4) {
 				planet = new Planet(random.nextInt(widthWindow - randomSize) + randomSize / 2,
-						random.nextInt(heightWindow - randomSize) + randomSize / 2, randomSize, Type.IA);
+						random.nextInt(heightWindow - randomSize) + randomSize / 2, randomSize, Planet.Type.IA);
 			}
 			else {
 				planet = new Planet(random.nextInt(widthWindow - randomSize) + randomSize / 2,
-						random.nextInt(heightWindow - randomSize) + randomSize / 2, randomSize, Type.NEUTRAL);
+						random.nextInt(heightWindow - randomSize) + randomSize / 2, randomSize, Planet.Type.NEUTRAL);
 			}
 
 			int countItem = 0;
@@ -57,7 +56,6 @@ public class Main {
 
 		
 		Planet.setItems(items);
-        Planet.setupDelayProductionSpaceShips();
 		
 		Manager manager = new Manager();
 		Run r = new Run(widthWindow, heightWindow);

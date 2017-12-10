@@ -32,10 +32,10 @@ public class KeyListener implements KeyHandler {
 	public void keyTyped(char key) {
 		switch (key) {
 		case 's':
-			Planet.savedPlanetAndSpaceShips();
+			Run.savedPlanetAndSpaceShips();
 			break;
 		case 'l':
-			Planet.loadPlanetAndSpaceShips();
+			Run.loadPlanetAndSpaceShips();
 			break;
 
 		default:
