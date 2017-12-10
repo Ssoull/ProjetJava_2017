@@ -13,16 +13,36 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * The run class.
+ */
 public class Run implements ApplicationRunnable<Item> {
 
+    /**
+     * Represent the width of the window.
+     */
 	private int width;
+
+	/**
+     * Represent the height of the window.
+	 */
 	private int height;
 
+    /**
+     * The constructor of run.
+     * @param width Represent the width of the window.
+     * @param height Represent the height of the window.
+     */
 	public Run(int width, int height) {
 		this.width = width;
 		this.height = height;
 	}
 
+    /**
+     * The implemented method from the {@link ApplicationRunnable} class.
+     * @param itemsArena Check {@link Arena}.
+     * @param items Represent a collection of item.
+     */
 	@Override
 	public void run(final Arena<Item> itemsArena, Collection<Item> items) {
 		MouseListener mouseHandler = new MouseListener();
@@ -68,7 +88,9 @@ public class Run implements ApplicationRunnable<Item> {
         setupDelayProductionSpaceShips();
 	}
 
-
+    /**
+     * Setup up the delay for each planet.
+     */
     public static void setupDelayProductionSpaceShips() {
 
         for (Item item : Planet.getItems()) {
@@ -85,7 +107,9 @@ public class Run implements ApplicationRunnable<Item> {
         }
     }
 
-
+    /**
+     * Method used to saved the current game.
+     */
     public static void savedPlanetAndSpaceShips()  {
 
         FileOutputStream fos = null;
@@ -115,6 +139,9 @@ public class Run implements ApplicationRunnable<Item> {
         }
     }
 
+    /**
+     * Method to load a precedent game.
+     */
     public static void loadPlanetAndSpaceShips()  {
 
         FileInputStream fis = null;

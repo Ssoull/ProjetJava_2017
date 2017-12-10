@@ -4,36 +4,57 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
+/**
+ * Represent the space ship class.
+ */
 public class SpaceShip extends Item {
 
+    /**
+     * Represent the different direction of a space ship.
+     */
     private enum Direction { UP, DOWN, LEFT, RIGHT, NONE}
 
+    /**
+     * Represent the objective of a space ships.
+     */
     private Item objective;
+
+    /**
+     * Boolean to check if the space ship is dodging on the X axis.
+     */
     private boolean isDodgingX;
+
+    /**
+     * Boolean to check if the space ship is dodging on the Y axis.
+     */
     private boolean isDodgingY;
 
+    /**
+     * Represent the attack of a space ship.
+     */
     private int attack;
 
-
-
+    /**
+     * Represent the speed of a space ship.
+     */
     private int speed;
 
-
-
+    /**
+     * Represent the origin of a space ship.
+     */
     private Planet origin;
 
-    public SpaceShip(double x, double y, int w, int attack, int speed) {
-        super(x, y, w, true);
-        objective = this;
-        isDodgingX = false;
-        isDodgingY = false;
-
-        this.attack = attack;
-        this.speed = speed;
-    }
-
+    /**
+     * The constructor of space ship.
+     * @param x Coordinates on the X axis.
+     * @param y Coordinates on the Y axis.
+     * @param w The width of the space ship.
+     * @param attack The attack of the space ship.
+     * @param speed The speed of the space ship.
+     * @param origin The origin planet of the space ship.
+     */
     public SpaceShip(double x, double y, int w, int attack, int speed, Planet origin){
-        super(x,y,w,true);
+        super(x,y, w);
         objective = this;
         isDodgingX = false;
         isDodgingY = false;
@@ -43,21 +64,29 @@ public class SpaceShip extends Item {
         this.origin = origin;
     }
 
-    public void setObjective(Item o) {
-        this.objective = o;
-    }
-
-    private static double squareDistance(Point2D p1, Point2D p2) {
-        double dx = p1.getX() - p2.getX();
-        double dy = p1.getY() - p2.getY();
-        return dx * dx + dy * dy;
-    }
-
+    /**
+     * Set the objective of the space ship.
+     * @param item Represent the item to go.
+     */
     @Override
-    public boolean contains(Point2D p) {
-        return squareDistance(this.center, p) <= (getWidth() / 2) * (getWidth() / 2);
+    public void setObjective(Item item) {
+        this.objective = item;
     }
 
+
+    /**
+     * The implemented method from {@link Item} class.
+     * @param point2D Represent the point to check.
+     * @return Return true if a space ship contains another item, false if not.
+     */
+    @Override
+    public boolean contains(Point2D point2D) {
+        return Math.pow(distanceBetween2Points(this.center, point2D), 2) <= (getWidth() / 2) * (getWidth() / 2);
+    }
+
+    /**
+     * The implemented method from {@link Item} class.
+     */
     @Override
     public void action() {
         for(int i = 0; i< speed; i++) {
@@ -189,23 +218,35 @@ public class SpaceShip extends Item {
         }
     }
 
+    /**
+     * The implemented method from {@link Item} class.
+     * @param graphics2D Represent the object to draw.
+     */
     @Override
-    public void draw(Graphics2D arg0) {
+    public void draw(Graphics2D graphics2D) {
         Point2D pos = this.center;
         int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
         if(origin.getType() == Planet.Type.PLAYER) {
-            arg0.setColor(Color.BLUE);
+            graphics2D.setColor(Color.BLUE);
         }
         else if (origin.getType() == Planet.Type.IA) {
-            arg0.setColor(Color.BLACK);
+            graphics2D.setColor(Color.BLACK);
         }
-        arg0.fillRect(x - w / 2, y - w / 2, w, w);
+        graphics2D.fillRect(x - w / 2, y - w / 2, w, w);
     }
 
+    /**
+     * Getter for the attack value.
+     * @return Return the attack value.
+     */
     public int getAttack() {
         return attack;
     }
 
+    /**
+     * Getter for the origin planet of the space ship.
+     * @return Return the origin value.
+     */
     public Planet getOrigin() {
         return origin;
     }

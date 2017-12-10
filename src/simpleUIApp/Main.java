@@ -42,7 +42,7 @@ public class Main {
 				if (items.get(countItem) instanceof Planet) {
 					
 					Planet checkPlanet = (Planet) items.get(countItem);
-					contains = checkPlanet.containsItem(planet);
+					contains = checkPlanet.containsPlanet(planet);
 				}
 				
 				countItem++;

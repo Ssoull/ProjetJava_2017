@@ -1,43 +1,81 @@
 package simpleUIApp.Items;
 
-import fr.ubordeaux.simpleUI.Application;
-import fr.ubordeaux.simpleUI.TimerRunnable;
-import fr.ubordeaux.simpleUI.TimerTask;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.*;
 
+/**
+ * Represent the planet class.
+ */
 public class Planet extends Item {
 
+    /**
+     * Represent the different type of a planet.
+     */
     public enum Type {PLAYER, NEUTRAL, IA}
 
+    /**
+     * Represent the minimal distance between planets.
+     */
     private final int DISTANCE_MIN_BETWEEN_PLANETS = 100;
-    private final int DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP = 15;
+
+    /**
+     * Represent the minimal distance where the space ships spawn.
+     */
+    private final int DISTANCE_MIN_SPAWN_SPACE_SHIPS = 15;
+
+    /**
+     * Represent a reference on the item list.
+     */
     private static ArrayList<Item> items;
 
+    /**
+     * Represent the arrayList to add space ships which need to be destroyed.
+     */
     private static ArrayList<SpaceShip> spaceShipsToDelete;
+
+    /**
+     * Represent the number of units.
+     */
     private int nbUnit;
 
+    /**
+     * Represent the percentage of space ships to send.
+     */
     private int percentageToSend;
 
+    /**
+     * Represent the speed of space ships.
+     */
     private int speedSpaceShips;
+
+    /**
+     * Represent the delay to product 1 space ship.
+     */
     private int timerProductionSpaceShips;
+
+    /**
+     * Represent the attack of space ships.
+     */
     private int attackSpaceShips;
 
+    /**
+     * Represent the type of the planet.
+     */
     private Type type;
 
+    /**
+     * The constructor of the planet.
+     * @param x Coordinates on the X axis.
+     * @param y Coordinates on the Y axis.
+     * @param w The width of the planet.
+     * @param type The type of the planet.
+     */
     public Planet (double x, double y, int w, Type type){
-        super(x,y,w, false);
+        super(x,y,w);
         this.type = type;
         nbUnit = 0;
         percentageToSend = 50;
@@ -49,6 +87,9 @@ public class Planet extends Item {
         attackSpaceShips = random.nextInt(3 - 1) + 1;
     }
 
+    /**
+     * The implemented method from {@link Item} class.
+     */
     @Override
     public void action() {
         if(this.type == Type.PLAYER || this.type == Type.IA)
@@ -74,49 +115,59 @@ public class Planet extends Item {
         }
     }
 
+
+    /**
+     * The implemented method from {@link Item} class.
+     * @param graphics2D Represent the object to draw.
+     */
     @Override
-    public void draw(Graphics2D arg0) {
+    public void draw(Graphics2D graphics2D) {
         Point2D pos = this.center;
         int x = (int) pos.getX(), y = (int) pos.getY(), w = this.getWidth();
-        arg0.setColor(Color.red);
+        graphics2D.setColor(Color.red);
         switch (this.type){
             case PLAYER:
-                arg0.setColor(Color.GREEN);
+                graphics2D.setColor(Color.GREEN);
                 break;
             case NEUTRAL:
-                arg0.setColor(Color.LIGHT_GRAY);
+                graphics2D.setColor(Color.LIGHT_GRAY);
                 break;
             case IA:
-                arg0.setColor(Color.RED);
+                graphics2D.setColor(Color.RED);
                 break;
             default:
                 break;
         }
-        arg0.fillRect(x - w / 2, y - w / 2, w, w);
+        graphics2D.fillRect(x - w / 2, y - w / 2, w, w);
 
-        arg0.setColor(Color.black);
+        graphics2D.setColor(Color.black);
         String nbUnitDisplay = "v:" + Integer.toString(nbUnit);
         String percentageDisplay = Integer.toString(percentageToSend) + "%";
-        arg0.drawString(nbUnitDisplay, x - ((float)nbUnitDisplay.length()/2 * 6.5f), y);
-        arg0.drawString(percentageDisplay, x - ((float)percentageDisplay.length()/2 * 6.5f), y + 15);
+        graphics2D.drawString(nbUnitDisplay, x - ((float)nbUnitDisplay.length()/2 * 6.5f), y);
+        graphics2D.drawString(percentageDisplay, x - ((float)percentageDisplay.length()/2 * 6.5f), y + 15);
     }
 
+
+    /**
+     * The implemented method from {@link Item} class.
+     * @param item Represent the item to go.
+     */
     @Override
-    public void setObjective(Item o) {
+    public void setObjective(Item item) {
 
         int nbLaunchingUnits;
 
-        nbLaunchingUnits = Math.round((float)(nbUnit * (percentageToSend/100.0)));
+        nbLaunchingUnits = Math.round((float) (nbUnit * (percentageToSend / 100.0)));
         Point2D planetCoord = this.center;
         SpaceShip spaceShip;
-        double ray = this.getWidth()/2;
-        double angle = ((360.f * Math.PI) / 180.f)/nbLaunchingUnits;
+        double ray = this.getWidth() / 2;
+        double angle = ((360.f * Math.PI) / 180.f) / nbLaunchingUnits;
         double sumAngle = angle;
         for (int count = 0; count < nbLaunchingUnits; count++) {
 
-            spaceShip = new SpaceShip(planetCoord.getX() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.cos(sumAngle)),
-                    planetCoord.getY() + ((ray + DISTANCE_MIN_SPAWN_AND_COLLISION_SPACE_SHIP) * Math.sin(sumAngle)), 10, attackSpaceShips, speedSpaceShips,this);
-            spaceShip.setObjective(o);
+            spaceShip = new SpaceShip(planetCoord.getX() + ((ray + DISTANCE_MIN_SPAWN_SPACE_SHIPS) * Math.cos(sumAngle)),
+                    planetCoord.getY() + ((ray + DISTANCE_MIN_SPAWN_SPACE_SHIPS) * Math.sin(sumAngle)), 10, attackSpaceShips, speedSpaceShips, this);
+            spaceShip.setObjective(item);
             items.add(spaceShip);
 
             sumAngle += angle;
@@ -124,24 +175,39 @@ public class Planet extends Item {
         }
     }
 
-    private double distanceBetween2Points(Point2D p1, Point2D p2) {
-        return Math.sqrt(Math.pow(p1.getX() - p2.getX(), 2) + Math.pow(p1.getY() - p2.getY(), 2));
-    }
-
+    /**
+     * The implemented method from {@link Item} class.
+     * @param point2D Represent the point to check.
+     * @return Return true if the planet contains another item, false if not.
+     */
     @Override
-    public boolean contains(Point2D p) {
+    public boolean contains(Point2D point2D) {
         Point2D upper_left = new Point2D.Double(this.center.getX() - (getWidth()/2), this.center.getY() - (getWidth()/2));
-        return p.getX() >= upper_left.getX() && p.getX() <= upper_left.getX() + getWidth() && p.getY() >= upper_left.getY() && p.getY() <= upper_left.getY() + getWidth();
+        return point2D.getX() >= upper_left.getX() && point2D.getX() <= upper_left.getX() + getWidth() && point2D.getY() >= upper_left.getY() && point2D.getY() <= upper_left.getY() + getWidth();
     }
 
+    /**
+     * Setup the reference of the arrayList of items.
+     */
     public static void setItems(ArrayList<Item> items) {
         Planet.items = items;
     }
 
-    public boolean containsItem(Planet planet) {
+    /**
+     * Check if the planet that call this method contains the planet in parameter.
+     * @param planet The planet to check.
+     * @return Return true if the planet contains the planet in parameter, false if not.
+     */
+    public boolean containsPlanet(Planet planet) {
         return distanceBetween2Points(planet.center, this.center) <= (getWidth()/2 + DISTANCE_MIN_BETWEEN_PLANETS) + (planet.getWidth()/2);
     }
 
+    /**
+     * Check if there is a collision between space ships and the other planets.
+     * @param objective Represent the objective of the space ship.
+     * @param center Represent the center of the space ship.
+     * @return Return the planet with which the space ships is in collision, null if there is no collision detected.
+     */
     static Planet checkPlanetCollisions(Planet objective, Point2D center) {
 
         boolean foundCollision = false;
@@ -169,14 +235,23 @@ public class Planet extends Item {
         return planet;
     }
 
-    public void incrementPercentageToSend(int percentageToSend) {
+    /**
+     * Method used to increment the percentage of space ships to send.
+     * @param percentageToAdd Represent the percentage to add to the current percentage.
+     */
+    public void incrementPercentageToSend(int percentageToAdd) {
 
-        if(this.percentageToSend + percentageToSend <= 100 &&
-                this.percentageToSend + percentageToSend >= 0) {
-            this.percentageToSend += percentageToSend;
+        if(this.percentageToSend + percentageToAdd <= 100 &&
+                this.percentageToSend + percentageToAdd >= 0) {
+            this.percentageToSend += percentageToAdd;
         }
     }
 
+    /**
+     * Method used to add a space ship to the list and work with.
+     * @param ship The ship to destroy.
+     * @param planet The planet to decrease its life.
+     */
     static void addSpaceShipToDelete(SpaceShip ship, Planet planet) {
         if(ship != null) {
             spaceShipsToDelete.add(ship);
@@ -190,20 +265,35 @@ public class Planet extends Item {
         }
     }
 
+    /**
+     * Method used to delete the space ships from the items list.
+     */
     public static void deleteSpaceShipList() {
 
         items.removeAll(spaceShipsToDelete);
         spaceShipsToDelete.clear();
     }
 
+    /**
+     * Getter for the type attribute.
+     * @return Return the type of the planet.
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     * Getter for the items list.
+     * @return Return the items list.
+     */
     public static ArrayList<Item> getItems() {
         return items;
     }
 
+    /**
+     * Return the delay of production for the space ships.
+     * @return Return the delay.
+     */
     public int getTimerProductionSpaceShips() {
         return timerProductionSpaceShips;
     }
